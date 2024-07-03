@@ -64,7 +64,7 @@ namespace CeleryAPI
 
     public class BaseFunctions
     {
-        private static string _firebaseDatabaseUrl = "https://celeryapi-4a205-default-rtdb.firebaseio.com/";
+        private static string _firebaseDatabaseUrl = "";
         internal static bool incognitoEnabled;
         internal static bool test = false;
         public class RichTextBoxWrapper : ExploitApi.ITextContainer
@@ -84,7 +84,7 @@ namespace CeleryAPI
         }
         private static async Task<string> GetCustomUncScript()
         {
-            string url = "https://raw.githubusercontent.com/cl0wnZwormz/celeryunc/main/unc.lua";
+            string url = "https://raw.githubusercontent.com/iexistbutnotforthis/Celeryapi/main/unc.lua";
             using (HttpClient client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync(url);
