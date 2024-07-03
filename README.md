@@ -1,5 +1,5 @@
 # Celeryapi
-# Celeryapi
+# Celeryapi NO LOG IN REQUIRED
 
 this is compeltely untested let me know if somerhing breaks and the key system of the original is still needed
 
