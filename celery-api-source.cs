@@ -20,7 +20,7 @@ namespace CeleryAPI
         private static string _key;
         public static string Name => _name;
         public static string Key => _key;
-        public ExploitApi(string name, string key)
+        public ExploitApi(string name = null, string key = null)
         {
             _name = name ?? "thisdoesntmatteranyway";
             _key = key ?? "thisdoesntmatteranyway";
