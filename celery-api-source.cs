@@ -22,8 +22,8 @@ namespace CeleryAPI
         public static string Key => _key;
         public ExploitApi(string name, string key)
         {
-            _name = name;
-            _key = key;
+            _name = name ?? "thisdoesntmatteranyway";
+            _key = key ?? "thisdoesntmatteranyway";
         }
         public interface ITextContainer
         {
