@@ -5,3 +5,7 @@ this is compeltely untested let me know if somerhing breaks and the key system o
 
 check out the compiled dll if you dont want it yourself
 https://github.com/iexistbutnotforthis/Celeryapi/releases/tag/Release 
+
+# discord 
+join our discord for the celery community driven api
+https://discord.com/invite/JGp3MZV2a4
