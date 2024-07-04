@@ -8,4 +8,4 @@ https://github.com/iexistbutnotforthis/Celeryapi/releases/tag/Release
 
 # discord 
 join our discord for the celery community driven api
-https://discord.com/invite/JGp3MZV2a4
+https://discord.com/invite/vPVnermHQu
