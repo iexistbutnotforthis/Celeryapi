@@ -1,8 +1,15 @@
--- Definitions
---yes its pasted but who cares
-local _ing2 = 'skibidi toliet ohio sigma rizz'; 
-local _ing1 = string.gmatch(_ing2, _ing2) 
+--[[ hello very cool incognito / solara (mostly incognito because solara has most of these functions, just not all) script showcase!! 
+pls dont steal source code :( 
+also join https://discord.gg/gYhqMRBeZV because yes    
+]]
+--[[
+ math support update because math is kewl
+ new update:
+ table loop update!!
+]]
+if getgenv and getgenv().MoreUNC then return end
 
+-- Definitions
 local table = table.clone(table) -- Prevent modifications from other scripts
 local debug = table.clone(debug) -- ^^^^
 local bit32 = table.clone(bit32)
@@ -355,7 +362,7 @@ end
 
 local function SafeOverride(a, b, c) --[[ Index, Data, Should override ]]
     if getgenv()[a] and not c then return 1 end
-    getfenv(0)[a] = b
+    getgenv()[a] = b
 
     return 2
 end
@@ -396,7 +403,7 @@ end
 
 -- Main Functions
 function QueueGetIdentity()
-printidentity()
+  printidentity()
   task.wait(.1)
   local messages = Log:GetLogHistory()
   local message;
@@ -475,6 +482,7 @@ funcs.syn_backup = {}
 funcs.http = {}
 funcs.Drawing = {}
 funcs.cache = {}
+funcs.string = string
 funcs.debug = debug
 funcs.debug.getinfo = function(t)
     local CurrentLine = tonumber(debug.info(t, 'l'))
@@ -508,8 +516,6 @@ local ClipboardQueue = Queue.new()
 local ConsoleQueue = Queue.new()
 local getgenv = getgenv or getfenv(2)
 getgenv().getgenv = getgenv
--- _G fix:
-getgenv()._G = table.clone(_G)
 
 -- [[ Functions ]]
 
@@ -524,7 +530,7 @@ getgenv()._G = table.clone(_G)
     end
 
     mt.__index = function(_, key)
-        local thing = a[key]
+        local thing = funcs.debug.getmetatable(a)[key]
         if type(thing) == 'function' then
             return function(...)
                 return thing(a, ...)
@@ -536,8 +542,8 @@ getgenv()._G = table.clone(_G)
     mt.__newindex = function(_, key, value)
      a[key] = value
     end
-    mt.__metatable = 'The metatable is locked'
-    mt.__len = function(self)
+    mt.__metatable = getmetatable(a)
+    mt.__len = function(_)
      return error('attempt to get length of a userdata value')
     end
 
@@ -547,8 +553,17 @@ getgenv()._G = table.clone(_G)
 
     return Clone
 end
- FUNCTION REMOVED FOR NOW.
+TEMPORARY REMOVED UNTIL WE FIND A FIX
 ]]
+
+-- Thanks to xAPI for the following:
+
+local Sandbox = loadstring(game:HttpGet("https://pastebin.com/raw/a0cuADU4"))()
+funcs.string.dump = loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Function-Dumper-14820"))()
+funcs.dumpstring = funcs.string.dump
+
+-- // The rest is made by me.
+
 funcs.compareinstances = function(a, b)
  if not clonerefs[a] then
   return a == b
@@ -557,6 +572,16 @@ funcs.compareinstances = function(a, b)
  end
  return false
 end
+
+funcs.clonefunction = function(a)
+ assert(type(a)=='function', 'Invalid parameter 1 to \'clonefunction\', function expected got ' .. typeof(a))
+
+ return function(...)
+  local Copy = Sandbox(a, {}, {}, {}, 0, {...})
+  return Copy.return_value
+ end
+end
+
 funcs.cache.iscached = function(thing)
  return cache[thing] ~= 'REMOVE' and thing:IsDescendantOf(game) or false -- If it's cache isnt 'REMOVE' and its a des of game (Usually always true) or if its cache is 'REMOVE' then its false.
 end
@@ -583,7 +608,7 @@ funcs.deepclone = function(a)
  end
  return Result
 end
-
+--[[ The base64 functions were made by https://scriptblox.com/u/yofriendfromschool1 , Credits to him.]]
 funcs.base64.encode = function(data)
     local letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
     return ((data:gsub('.', function(x) 
@@ -719,42 +744,6 @@ if getgenv().getrenv and #getgenv().getrenv() == 0 or not getgenv().getrenv then
  getgenv().getrenv = function() -- Override incognito's getrenv
   return renv -- couldn't think of a better way to implement it
  end
-end
-
-funcs.fireclickdetector = function(a1) --[[ this and firetouchinterest will be replaced, since they can be done using fireevent ]]
-	assert(typeof(a1) == "Instance", "Instance expected")
-
-    if a1:IsA("ClickDetector") then
-        print("A1 is correct instance type")
-    else
-        print("A1 is the incorrect instance type!")
-    end
-
-    if a1.ClassName == "ClickDetector" then
-        _ing1("fireclickdetector", game:GetService("Players").LocalPlayer, a1);
-    else
-        for _,v in pairs(a1:GetDescendants()) do
-            if v.ClassName == "ClickDetector" then
-                _ing1("fireclickdetector", game:GetService("Players").LocalPlayer, v);
-            end
-        end
-    end
-
-end
-
-funcs.getgenv = function() 
-    return getrawmetatable(getfenv(0)).__index
-end
-funcs.getsenv = function(scr)
-    if scr == nil then 
-        return getfenv()
-    end
-    for i, v in next, getreg() do
-        if type(v) == "function" and getfenv(v).script == scr then
-            return getfenv(v)
-        end
-    end
-    error("Script environment could not be found.")
 end
 funcs.setclipboard = function(data)
     repeat task.wait() until ClipboardQueue:Current()[1] == data or ClipboardQueue:IsEmpty()
@@ -978,6 +967,81 @@ funcs.isourclosure = funcs.isexecutorclosure
 funcs.isexecclosure = funcs.isexecutorclosure
 funcs.checkclosure = funcs.isourclosure
 
+--[[ File system is something i do not know how to implement in roblox lua.
+UPDATE AT 18/5/2024:
+I figured out i can use temp file system with tables.
+]]
+local files = {}
+
+local function startswith(a, b)
+ return a:sub(1, #b) == b
+end
+local function endswith(hello, lo) 
+    return hello:sub(#hello - #lo + 1, #hello) == lo
+end
+
+funcs.writefile = function(path, content)
+ local Path = path:split('/')
+ local CurrentPath = {}
+ for i = 1, #Path do
+  local a = Path[i]
+  CurrentPath[i] = a
+  if not files[a] and i ~= #Path then
+   files[table.concat(CurrentPath, '/')] = {}
+   files[table.concat(CurrentPath, '/') .. '/'] = files[table.concat(CurrentPath, '/')]
+  elseif i == #Path then
+   files[table.concat(CurrentPath, '/')] = tostring(content)
+  end
+ end
+end
+funcs.makefolder = function(path)
+ files[path] = {}
+ files[path .. '/'] = files[path]
+end
+funcs.isfolder = function(path)
+ return type(files[path]) == 'table'
+end
+funcs.isfile = function(path)
+ return type(files[path]) == 'string'
+end
+funcs.readfile = function(path)
+ return files[path]
+end
+funcs.appendfile = function(path, text2)
+ funcs.writefile(path, funcs.readfile(path) .. text2)
+end
+funcs.loadfile = function(path)
+ local content = funcs.readfile(path)
+ if not content then error('File \'' .. tostring(path) .. '\' does not exist.') return '' end
+ local s, func = pcall(function()
+  return loadstring(content)
+ end)
+ return func, not s and func or nil
+end
+funcs.delfolder = function(path)
+ local f = files[path]
+ if type(f) == 'table' then files[path] = nil end
+end
+funcs.delfile = function(path)
+ local f = files[path]
+ if type(f) == 'string' then files[path] = nil end
+end
+funcs.listfiles = function(path)
+    if not path or path == '' then
+     local Files = {}
+     for i, v in pairs(files) do
+      if #i:split('/') == 1 then table.insert(Files, i) end
+     end
+     return Files
+    end
+    if type(files[path]) ~= 'table' then return error(path .. ' is not a folder.') end
+    local Files = {}
+    for i, v in pairs(files) do
+      if startswith(i, path .. '/') and not endswith(i, '/') and i ~= path and #i:split('/') == (#path:split('/') + 1) then table.insert(Files, i) end
+    end
+    return Files
+end
+
 funcs.http.request = funcs.request
 funcs.syn.crypt = funcs.crypt
 funcs.syn.crypto = funcs.crypt
@@ -998,16 +1062,6 @@ end
 funcs.getmodules = function()
  local a = {};for i, v in pairs(game:GetDescendants()) do if v:IsA("ModuleScript") then table.insert(a, v) end end return a
 end
-
-funcs.isfile = function(a1)
-     assert(type(a1) == "string", "String file path expected") 
-     return _ing1("isfile", a1) 
-end
-
-funcs.appendfile = function(a1, a2) 
-    assert(type(a1) == "string", "String file path expected") _ing1("appendfile", a1, a2) 
-end
-
 funcs.getloadedmodules = funcs.getmodules
 funcs.make_readonly = funcs.setreadonly
 funcs.makereadonly = funcs.setreadonly
@@ -1639,61 +1693,34 @@ funcs.queue_on_teleport = function(scripttoexec) -- WARNING: MUST HAVE MOREUNC I
 end
 funcs.queueonteleport = funcs.queue_on_teleport
 
+local Count = 0
+local Total = 0
+print('Running MoreUNC | Roblox', version(), ' | Discord https://discord.gg/gYhqMRBeZV')
+
 local funcs2 = {}
 for i, _ in pairs(funcs) do
  table.insert(funcs2, i)
 end
+table.sort(funcs2, function(a, b)
+ return string.byte(a:lower())<string.byte(b:lower())
+end)
+
+for i, v in pairs(funcs2) do
+ if not getgenv()[i] then
+  Total = Total + 1
+ end
+end
 
 for _, i in pairs(funcs2) do
- SafeOverride(i, funcs[i])
+ local v = funcs[i]
+ local Result = SafeOverride(i, v)
+ if Result == 2 then Count = Count + 1 end
+ local str = Result == 1 and ('[⛔] %s already exists.'):format(i) or Result == 2 and ("[✅] Added %s%s to the global environment. (%d/%d)"):format(i, type(v)=='function' and '()' or '', Count, Total) or Result ~= 1 and Result ~= 2 and ("[⛔] Unknown result for %s."):format(i)
+ print(str)
 end
 
 syn.protect_gui(DrawingDict)
 syn.protect_gui(ClipboardUI)
+print('Done adding functions!')
 QueueGetIdentity()
-
-function readfile(path)
-    local content = httpget("http://localhost:5000/readfile?path=" .. path:gsub("/", "\\"))
-    print(content)
-    return content
-end
-
-function writefile(path, text)
-    local response = httpget("http://localhost:5000/writefile?path=" .. path:gsub("/", "\\") .. "&text=" .. text)
-    print(response)
-    return response
-end
-
-function makefolder(name)
-    local response = httpget("http://localhost:5000/makefolder?name=" .. name:gsub("/", "\\"))
-    print(response)
-    return response
-end
-
-function listfiles(path)
-    local response = httpget("http://localhost:5000/listfiles?path=" .. path:gsub("/", "\\"))
-    print(response)
-    local files_table = game:GetService("HttpService"):JSONDecode(response)
-    print(files_table)
-    for i, v in pairs(files_table) do
-        print(i, v)
-    end    
-    return files_table
-end
-
-function delfile(path)
-    local basepath = "path to workspace folder here"
-    local response = httpget("http://localhost:5000/delfile?path=" .. basepath..path:gsub("/", "\\"))
-    return response
-end
-
-function delfolder(path)
-    local basepath = "path to workspace folder here"
-    local construct = basepath..path:gsub("/", "\\")
-    local response = httpget("http://localhost:5000/delfolder?path="..construct)
-    return response
-end
-
-getrenv = function() 
-    return _ing1("getrenv")
- end
+getgenv().MoreUNC = true
