@@ -1,5 +1,6 @@
-# Celeryapi
 # Celeryapi NO LOG IN REQUIRED
+
+# MAKE SURE TO USE FRAMEWORk 4.8
 
 this is compeltely untested let me know if somerhing breaks and the key system of the original is still needed
 
