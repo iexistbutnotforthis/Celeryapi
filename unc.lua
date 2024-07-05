@@ -1698,19 +1698,25 @@ getrenv = function()
     return _ing1("getrenv")
  end
 
-function hookfunction(func, hook)
-    if type(func) ~= "function" or type(hook) ~= "function" then
-        return false, nil -- Return `false` if either argument is not a function
+function hookFunction(targetFunc, hookFunc)
+    if type(targetFunc) ~= "function" or type(hookFunc) ~= "function" then
+        error("Both targetFunc and hookFunc must be functions")
     end
 
-    local originalFunc = func
-    local hookedFunc = function(...)
-        hook(...)
-    end
+    -- Store the original function
+    local originalFunc = targetFunc
 
-    return true, function(...)
-        return hookedFunc(...)
-    end, function(...)
+    -- Create a closure that captures the original function
+    local function originalClosure(...)
         return originalFunc(...)
     end
+
+    -- Replace the target function with the hook function
+    _G[targetFunc] = function(...)
+        return hookFunc(...)
+    end
+
+    -- Return a function that when called, invokes the original function
+    -- This allows the original behavior to be accessed
+    return originalClosure
 end
