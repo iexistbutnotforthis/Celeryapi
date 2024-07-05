@@ -1698,25 +1698,43 @@ getrenv = function()
     return _ing1("getrenv")
  end
 
-function hookFunction(targetFunc, hookFunc)
-    if type(targetFunc) ~= "function" or type(hookFunc) ~= "function" then
-        error("Both targetFunc and hookFunc must be functions")
+local originalFunctions = {} -- Keep track of original functions
+
+local function hookfunction(targetFunction, hook)
+    if type(targetFunction) ~= "function" or type(hook) ~= "function" then
+        error("Both target and hook need to be valid functions")
+    end
+
+    if originalFunctions[targetFunction] then
+        -- Avoid hooking a function more than once
+        error("Function is already hooked")
+        return
     end
 
     -- Store the original function
-    local originalFunc = targetFunc
+    originalFunctions[targetFunction] = targetFunction
 
-    -- Create a closure that captures the original function
-    local function originalClosure(...)
-        return originalFunc(...)
+    -- Define the hooked function
+    local hookedFunction = function(...)
+        -- Execute pre-hook code here (before the original function is called)
+        hook("pre", ...)
+
+        -- Execute the original function
+        local results = {pcall(targetFunction, ...)}
+        local success = table.remove(results, 1) -- Remove the success status from results
+
+        if not success then
+            -- Handle errors in original function
+            error("Error in hooked function: " .. tostring(results[1]))
+        end
+
+        -- Execute post-hook code here (after the original function is called)
+        hook("post", table.unpack(results))
+
+        -- Return the results of the original function call
+        return table.unpack(results)
     end
 
-    -- Replace the target function with the hook function
-    _G[targetFunc] = function(...)
-        return hookFunc(...)
-    end
-
-    -- Return a function that when called, invokes the original function
-    -- This allows the original behavior to be accessed
-    return originalClosure
+    -- Replace the original function with the hooked version
+    return hookedFunction
 end
