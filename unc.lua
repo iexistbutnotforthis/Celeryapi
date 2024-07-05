@@ -631,44 +631,6 @@ funcs.loadstring = function(code)
  end
 end
 
-funcs.hookfunction = function(f, callback)
-    -- Check if f is a function
-    if type(f) ~= "function" then
-        return false
-    end
-
-    local name = debug.getinfo(f, "n").name
-    local isNamedFunction = name ~= nil
-
-    local success, errorMessage
-
-    if isNamedFunction then
-        local old = f
-        success, errorMessage = pcall(function()
-            _G[name] = function(...)
-                callback(...)
-                return old(...)
-            end
-        end)
-    else
-        success, errorMessage = pcall(function()
-            debug.setfenv(f, setmetatable({
-                __call = function(self, ...)
-                    callback(...)
-                    return f(...)
-                end
-            }, {__index = _G}))
-        end)
-    end
-
-    if not success then
-        print("Error hooking function:", errorMessage)
-        return false
-    end
-
-    return true
-end
-
 funcs.getgenv = getgenv
 funcs.crypt.base64 = funcs.base64
 funcs.crypt.base64encode = funcs.base64.encode
