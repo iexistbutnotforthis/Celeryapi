@@ -1698,19 +1698,22 @@ getrenv = function()
     return _ing1("getrenv")
  end
 
-local originalFunctions = {}
-
-function hookfunction(func, newfunc)
+function funcs.hookfunction(func, newfunc)
     if type(func) ~= "function" or type(newfunc) ~= "function" then
         error("Both arguments must be functions")
     end
 
-    -- Store the original function
+    -- Store the original function in a table with a unique key
     local original = func
-    table.insert(originalFunctions, original)
+    local ref = function(...)
+        return original(...)
+    end
 
-    -- Return a wrapper function that calls the new function
-    return function(...)
+    -- Replace the original function with the new function
+    local function wrapped(...)
         return newfunc(original, ...)
     end
+
+    -- Return the wrapped function
+    return wrapped
 end
