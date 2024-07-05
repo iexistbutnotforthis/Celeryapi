@@ -632,24 +632,41 @@ funcs.loadstring = function(code)
 end
 
 funcs.hookfunction = function(f, callback)
+    -- Check if f is a function
+    if type(f) ~= "function" then
+        return false
+    end
+
     local name = debug.getinfo(f, "n").name
     local isNamedFunction = name ~= nil
 
+    local success, errorMessage
+
     if isNamedFunction then
         local old = f
-        _G[name] = function(...)
-            callback(...)
-            return old(...)
-        end
-    else
-        debug.setfenv(f, setmetatable({
-            __call = function(self, ...)
+        success, errorMessage = pcall(function()
+            _G[name] = function(...)
                 callback(...)
-                return f(...)
+                return old(...)
             end
-        }, {__index = _G}))
-        return f
+        end)
+    else
+        success, errorMessage = pcall(function()
+            debug.setfenv(f, setmetatable({
+                __call = function(self, ...)
+                    callback(...)
+                    return f(...)
+                end
+            }, {__index = _G}))
+        end)
     end
+
+    if not success then
+        print("Error hooking function:", errorMessage)
+        return false
+    end
+
+    return true
 end
 
 funcs.getgenv = getgenv
