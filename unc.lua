@@ -1697,3 +1697,20 @@ end
 getrenv = function() 
     return _ing1("getrenv")
  end
+
+function hookFunction(func, hook)
+    if type(func) ~= "function" or type(hook) ~= "function" then
+        return false, nil -- Return `false` if either argument is not a function
+    end
+
+    local originalFunc = func
+    local hookedFunc = function(...)
+        hook(...)
+    end
+
+    return true, function(...)
+        return hookedFunc(...)
+    end, function(...)
+        return originalFunc(...)
+    end
+end
