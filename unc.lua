@@ -631,24 +631,25 @@ funcs.loadstring = function(code)
  end
 end
 
-function funcs.hookfunction(func, newfunc)
-    if type(func) ~= "function" or type(newfunc) ~= "function" then
-        error("Both arguments must be functions")
-    end
+funcs.hookfunction = function(f, callback)
+    local name = debug.getinfo(f, "n").name
+    local isNamedFunction = name ~= nil
 
-    -- Store the original function in a table with a unique key
-    local original = func
-    local ref = function(...)
-        return original(...)
+    if isNamedFunction then
+        local old = f
+        _G[name] = function(...)
+            callback(...)
+            return old(...)
+        end
+    else
+        debug.setfenv(f, setmetatable({
+            __call = function(self, ...)
+                callback(...)
+                return f(...)
+            end
+        }, {__index = _G}))
+        return f
     end
-
-    -- Replace the original function with the new function
-    local function wrapped(...)
-        return newfunc(original, ...)
-    end
-
-    -- Return the wrapped function
-    return wrapped
 end
 
 funcs.getgenv = getgenv
