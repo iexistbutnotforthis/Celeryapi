@@ -630,6 +630,27 @@ funcs.loadstring = function(code)
   return oldLoader(code)
  end
 end
+
+function funcs.hookfunction(func, newfunc)
+    if type(func) ~= "function" or type(newfunc) ~= "function" then
+        error("Both arguments must be functions")
+    end
+
+    -- Store the original function in a table with a unique key
+    local original = func
+    local ref = function(...)
+        return original(...)
+    end
+
+    -- Replace the original function with the new function
+    local function wrapped(...)
+        return newfunc(original, ...)
+    end
+
+    -- Return the wrapped function
+    return wrapped
+end
+
 funcs.getgenv = getgenv
 funcs.crypt.base64 = funcs.base64
 funcs.crypt.base64encode = funcs.base64.encode
