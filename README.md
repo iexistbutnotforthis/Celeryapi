@@ -8,8 +8,9 @@ check out the compiled dll if you dont want it yourself
 https://github.com/iexistbutnotforthis/Celeryapi/releases/tag/Release 
 
 # CREDITS TO:
-https://discord.com/invite/celery THEY MADE THE ENTIRE API AND INJECTOR 
+[.gg/celery](https://discord.com/invite/celery) THEY MADE THE ENTIRE API AND INJECTOR 
 
 # DISCORD
-https://discord.com/invite/u2YWpA8y7U THIS IS FOR THE GITHUB REPO MAINTANCE AND MAYBE IMPROVEMENTS
-https://discord.com/invite/celery THEY MADE THE ENTIRE API AND INJECTOR 
+[.gg/u2YWpA8y7U](https://discord.com/invite/u2YWpA8y7U) THIS IS FOR THE GITHUB REPO MAINTANCE AND MAYBE IMPROVEMENTS
+
+# [DOCS](https://github.com/iexistbutnotforthis/Celeryapi/blob/main/docs.md)
